@@ -8,6 +8,7 @@ import MotorDetailPage from './components/MotorDetailPage';
 import CreditApplicationForm from './components/CreditApplicationForm';
 import PromoBanner from './components/PromoBanner';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
+import AuthModal from './components/AuthModal';
 import { MOTORS, BRANDS, LOCATIONS, TESTIMONIALS } from './constants';
 import { Motor, MotorType, CreditApplication } from './types';
 import { getMotorAdvice } from './services/gemini';
@@ -36,6 +37,11 @@ const App: React.FC = () => {
   const [aiInput, setAiInput] = useState('');
   const [aiResponse, setAiResponse] = useState('');
   const [isAiLoading, setIsAiLoading] = useState(false);
+
+  // Auth State
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const [user, setUser] = useState<{ name: string } | null>(null);
 
   const filteredMotors = MOTORS.filter(m => {
     const brandMatch = filterBrand === 'Semua' || m.brand === filterBrand;
@@ -85,9 +91,19 @@ const App: React.FC = () => {
     console.log('Application Submitted:', data);
   };
 
+  const openAuth = (mode: 'login' | 'signup') => {
+    setAuthMode(mode);
+    setIsAuthModalOpen(true);
+  };
+
   return (
     <div className="min-h-screen pb-20">
-      <Navbar />
+      <Navbar 
+        onLoginClick={() => openAuth('login')} 
+        onSignUpClick={() => openAuth('signup')} 
+        user={user}
+        onLogout={() => setUser(null)}
+      />
 
       {currentView === 'HOME' ? (
         <div className="animate-in fade-in duration-500">
@@ -404,6 +420,13 @@ const App: React.FC = () => {
           onSubmit={handleApplicationSubmit}
         />
       )}
+
+      <AuthModal 
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        initialMode={authMode}
+        onSuccess={(u) => setUser(u)}
+      />
 
       <FloatingWhatsApp />
 
