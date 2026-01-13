@@ -4,9 +4,10 @@ import { Motor } from '../types';
 
 interface CreditSimulatorProps {
   selectedMotor: Motor | null;
+  onApply?: (motor: Motor, tenure: number, dpAmount: number, installment: number) => void;
 }
 
-const CreditSimulator: React.FC<CreditSimulatorProps> = ({ selectedMotor }) => {
+const CreditSimulator: React.FC<CreditSimulatorProps> = ({ selectedMotor, onApply }) => {
   const [tenure, setTenure] = useState(36);
   const [dpPercent, setDpPercent] = useState(20);
   const [monthlyInstallment, setMonthlyInstallment] = useState(0);
@@ -42,6 +43,8 @@ const CreditSimulator: React.FC<CreditSimulatorProps> = ({ selectedMotor }) => {
       </div>
     );
   }
+
+  const dpAmount = selectedMotor.price * (dpPercent / 100);
 
   return (
     <div id="credit" className="bg-white rounded-3xl p-8 border border-slate-100 shadow-xl scroll-mt-24">
@@ -105,7 +108,7 @@ const CreditSimulator: React.FC<CreditSimulatorProps> = ({ selectedMotor }) => {
             </div>
             <div className="flex justify-between items-center text-sm">
               <span className="text-slate-600">Total DP</span>
-              <span className="font-bold text-blue-600">{formatCurrency(selectedMotor.price * (dpPercent / 100))}</span>
+              <span className="font-bold text-blue-600">{formatCurrency(dpAmount)}</span>
             </div>
           </div>
         </div>
@@ -124,7 +127,10 @@ const CreditSimulator: React.FC<CreditSimulatorProps> = ({ selectedMotor }) => {
           <p className="text-center text-slate-400 text-xs mb-8">
             *Estimasi bunga 8% per tahun. Harga dapat berubah sewaktu-waktu sesuai ketentuan dealer.
           </p>
-          <button className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-xl shadow-blue-900/40">
+          <button 
+            onClick={() => onApply?.(selectedMotor, tenure, dpAmount, monthlyInstallment)}
+            className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-xl shadow-blue-900/40"
+          >
             Ajukan Kredit Sekarang
           </button>
         </div>

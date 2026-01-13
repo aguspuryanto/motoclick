@@ -4,12 +4,19 @@ export interface Motor {
   name: string;
   brand: string;
   type: MotorType;
+  condition: 'New' | 'Used';
   price: number;
+  marketPrice?: number; // Used for reference on Used bikes
   engine: string;
   colors: string[];
   imageUrl: string;
   description: string;
+  year: number;
+  location: string;
   isPopular?: boolean;
+  isReady: boolean;
+  promoExpiry?: string;
+  bonus?: string[];
 }
 
 export enum MotorType {
@@ -31,4 +38,16 @@ export interface MembershipTier {
   color: string;
   benefits: string[];
   minPurchase: number;
+}
+
+export interface CreditApplication {
+  fullName: string;
+  nik: string;
+  phone: string;
+  address: string;
+  motorId: string;
+  tenure: number;
+  dpAmount: number;
+  installment: number;
+  paymentMethod: string;
 }
